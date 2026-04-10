@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TunedAI Labs — We Make Open-Source Models Smarter</title>
+<title>TunedAI Labs — AI Tune-Ups for Open-Source Models</title>
 <meta name="description" content="TunedAI Labs fine-tunes open-source LLMs for specialized reasoning tasks. A 7B model, fine-tuned right, scores 96.96% on CLadder — beating GPT-4o's 72%.">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -12,12 +12,14 @@
   --surface:#0d1117;
   --card:#111827;
   --border:#1f2937;
+  --orange:#f97316;
+  --orange-dim:rgba(249,115,22,.12);
+  --orange-border:rgba(249,115,22,.3);
   --blue:#3b82f6;
   --blue-dim:rgba(59,130,246,.12);
   --blue-border:rgba(59,130,246,.25);
   --green:#10b981;
   --green-dim:rgba(16,185,129,.1);
-  --purple:#8b5cf6;
   --text:#f1f5f9;
   --muted:#64748b;
   --soft:#94a3b8;
@@ -28,82 +30,97 @@ a{text-decoration:none;color:inherit}
 
 /* NAV */
 nav{display:flex;justify-content:space-between;align-items:center;padding:18px 48px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(7,9,15,.92);backdrop-filter:blur(12px);z-index:100}
-.logo{font-size:18px;font-weight:800;letter-spacing:-.5px;color:var(--text)}
-.logo span{color:var(--blue)}
+.logo{font-size:18px;font-weight:800;letter-spacing:-.5px;color:var(--text);display:flex;align-items:center;gap:10px}
+.logo-icon{width:32px;height:32px}
+.logo span{color:var(--orange)}
 .nav-links{display:flex;gap:32px;list-style:none;align-items:center}
 .nav-links a{color:var(--muted);font-size:14px;transition:color .2s}
 .nav-links a:hover{color:var(--text)}
-.nav-cta{background:var(--blue);color:#fff!important;padding:8px 20px;border-radius:6px;font-size:13px;font-weight:700}
-.nav-cta:hover{background:#2563eb!important}
+.nav-cta{background:var(--orange);color:#fff!important;padding:8px 20px;border-radius:6px;font-size:13px;font-weight:700}
+.nav-cta:hover{background:#ea6b0e!important}
 
 /* HERO */
-.hero{text-align:center;padding:120px 48px 96px;max-width:900px;margin:0 auto;position:relative}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--blue-dim);border:1px solid var(--blue-border);color:var(--blue);font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:6px 16px;border-radius:20px;margin-bottom:32px}
-.badge-dot{width:6px;height:6px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.hero h1{font-size:clamp(42px,6vw,72px);font-weight:900;letter-spacing:-2px;line-height:1.05;margin-bottom:24px}
-.hero h1 .hl{color:var(--blue)}
-.hero p{font-size:18px;color:var(--soft);max-width:560px;margin:0 auto 48px;line-height:1.75}
-.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-.btn-primary{background:var(--blue);color:#fff;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:700;transition:background .2s;display:inline-block}
-.btn-primary:hover{background:#2563eb}
+.hero{display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center;padding:96px 72px;max-width:1200px;margin:0 auto}
+.hero-left{max-width:580px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--orange-dim);border:1px solid var(--orange-border);color:var(--orange);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border-radius:20px;margin-bottom:28px}
+.badge-dot{width:6px;height:6px;background:var(--orange);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-size:clamp(38px,5vw,64px);font-weight:900;letter-spacing:-2px;line-height:1.05;margin-bottom:20px}
+.hero h1 em{color:var(--orange);font-style:normal}
+.hero h2{font-size:clamp(16px,2vw,20px);color:var(--soft);font-weight:400;margin-bottom:40px;line-height:1.65;max-width:480px}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn-primary{background:var(--orange);color:#fff;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:700;transition:background .2s;display:inline-block}
+.btn-primary:hover{background:#ea6b0e}
 .btn-secondary{background:transparent;color:var(--text);padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;border:1px solid var(--border);transition:border-color .2s;display:inline-block}
 .btn-secondary:hover{border-color:var(--soft)}
+
+/* MASCOT */
+.mascot-wrap{position:relative;flex-shrink:0}
+.mascot-bubble{position:absolute;top:-20px;right:-10px;background:var(--orange);color:#fff;font-size:11px;font-weight:800;padding:8px 14px;border-radius:12px;border-bottom-right-radius:2px;white-space:nowrap;letter-spacing:.5px}
+.mascot-bubble::after{content:'';position:absolute;bottom:-8px;right:12px;border:5px solid transparent;border-top-color:var(--orange)}
+
+/* WINK ANIMATION */
+.eye-right-open{animation:wink-open 5s infinite}
+.eye-right-wink{animation:wink-closed 5s infinite}
+@keyframes wink-open{0%,70%,100%{opacity:1}75%,95%{opacity:0}}
+@keyframes wink-closed{0%,70%,100%{opacity:0}75%,95%{opacity:1}}
 
 /* PROOF BAR */
 .proof{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:48px}
 .proof-inner{max-width:960px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:48px;text-align:center}
-.proof-num{font-size:48px;font-weight:900;letter-spacing:-2px;color:var(--blue)}
+.proof-num{font-size:48px;font-weight:900;letter-spacing:-2px;color:var(--orange)}
 .proof-label{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.5}
 
-/* BENCHMARK */
+/* SECTIONS */
 .section{padding:96px 48px;max-width:1080px;margin:0 auto}
-.sec-tag{font-size:11px;font-weight:700;letter-spacing:3px;color:var(--blue);text-transform:uppercase;margin-bottom:14px}
+.sec-tag{font-size:11px;font-weight:700;letter-spacing:3px;color:var(--orange);text-transform:uppercase;margin-bottom:14px}
 h2{font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-.5px;margin-bottom:16px;line-height:1.15}
 .sec-sub{font-size:16px;color:var(--soft);max-width:580px;margin-bottom:56px;line-height:1.75}
 
+/* BENCHMARK */
 .bench-table{width:100%;border-collapse:collapse;font-size:14px}
 .bench-table th{text-align:left;padding:10px 16px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)}
 .bench-table td{padding:16px;border-bottom:1px solid var(--border)}
-.bench-table tr.hl td{background:var(--blue-dim)}
-.bench-table tr.hl .model-name{color:var(--blue);font-weight:800}
+.bench-table tr.hl td{background:var(--orange-dim)}
+.bench-table tr.hl .model-name{color:var(--orange);font-weight:800}
 .score-bar-wrap{display:flex;align-items:center;gap:12px}
 .score-bar-bg{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
-.score-bar-fill{height:100%;border-radius:4px;transition:width .6s}
+.score-bar-fill{height:100%;border-radius:4px}
 .score-val{font-size:13px;font-weight:700;min-width:50px;text-align:right}
 
 /* HOW IT WORKS */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:56px}
-.step{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:32px}
-.step-num{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--blue);text-transform:uppercase;margin-bottom:16px}
+.step{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:32px;position:relative;overflow:hidden}
+.step::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--orange)}
+.step-num{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--orange);text-transform:uppercase;margin-bottom:16px}
 .step h3{font-size:18px;font-weight:800;margin-bottom:10px}
 .step p{font-size:14px;color:var(--soft);line-height:1.7}
 
 /* WHY OPEN SOURCE */
-.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;margin-top:0}
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
 .why-points{display:flex;flex-direction:column;gap:24px}
 .why-point{display:flex;gap:16px;align-items:flex-start}
 .why-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;margin-top:2px}
+.why-icon.orange{background:var(--orange-dim);border:1px solid var(--orange-border)}
 .why-icon.blue{background:var(--blue-dim);border:1px solid var(--blue-border)}
-.why-icon.green{background:var(--green-dim);border:1px solid rgba(16,185,129,.25)}
 .why-text h4{font-size:15px;font-weight:700;margin-bottom:4px}
 .why-text p{font-size:14px;color:var(--soft);line-height:1.65}
 .why-visual{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:32px}
 .compare-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px}
 .compare-row:last-child{border-bottom:none}
 .compare-row .label{color:var(--soft)}
-.compare-row .open{color:var(--green);font-weight:700}
+.compare-row .open{color:#10b981;font-weight:700}
 .compare-row .closed{color:var(--muted)}
 .compare-header{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
 
 /* SERVICES */
 .services{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .svc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;transition:border-color .2s}
-.svc:hover{border-color:var(--blue)}
+.svc:hover{border-color:var(--orange)}
 .svc-icon{font-size:28px;margin-bottom:16px}
 .svc h3{font-size:16px;font-weight:800;margin-bottom:8px}
 .svc p{font-size:13px;color:var(--soft);line-height:1.65}
-.svc-tag{display:inline-block;margin-top:14px;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--blue);text-transform:uppercase}
+.svc-tag{display:inline-block;margin-top:14px;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--orange);text-transform:uppercase}
 
 /* CTA */
 .cta-section{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:96px 48px;text-align:center}
@@ -112,21 +129,22 @@ h2{font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-.5px;margin-bo
 .cta-inner p{font-size:16px;color:var(--soft);margin-bottom:40px;line-height:1.75}
 .cta-email{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 .email-input{background:var(--card);border:1px solid var(--border);color:var(--text);padding:13px 20px;border-radius:8px;font-size:14px;width:280px;outline:none;transition:border-color .2s}
-.email-input:focus{border-color:var(--blue)}
+.email-input:focus{border-color:var(--orange)}
 .email-input::placeholder{color:var(--muted)}
 
 /* FOOTER */
 footer{padding:40px 48px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
 .footer-logo{font-size:15px;font-weight:800;letter-spacing:-.3px}
-.footer-logo span{color:var(--blue)}
+.footer-logo span{color:var(--orange)}
 .footer-links{display:flex;gap:24px}
 .footer-links a{font-size:13px;color:var(--muted);transition:color .2s}
 .footer-links a:hover{color:var(--text)}
 .footer-copy{font-size:12px;color:var(--muted)}
 
-@media(max-width:768px){
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;padding:64px 24px}
+  .mascot-wrap{display:none}
   nav{padding:16px 24px}
-  .hero{padding:80px 24px 64px}
   .proof-inner{grid-template-columns:1fr;gap:32px}
   .section{padding:64px 24px}
   .steps{grid-template-columns:1fr}
@@ -139,7 +157,14 @@ footer{padding:40px 48px;border-top:1px solid var(--border);display:flex;justify
 <body>
 
 <nav>
-  <a href="/" class="logo">TunedAI<span>Labs</span></a>
+  <a href="/" class="logo">
+    <svg class="logo-icon" viewBox="0 0 32 32" fill="none">
+      <circle cx="16" cy="16" r="15" stroke="#f97316" stroke-width="2"/>
+      <path d="M10 16 Q16 8 22 16 Q16 24 10 16Z" fill="#f97316" opacity=".8"/>
+      <circle cx="16" cy="16" r="4" fill="#f97316"/>
+    </svg>
+    TunedAI<span>Labs</span>
+  </a>
   <ul class="nav-links">
     <li><a href="#how-it-works">How It Works</a></li>
     <li><a href="#benchmark">Benchmark</a></li>
@@ -151,12 +176,77 @@ footer{padding:40px 48px;border-top:1px solid var(--border);display:flex;justify
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-badge"><span class="badge-dot"></span>Fine-Tuning Open-Source LLMs</div>
-  <h1>We make open-source<br>models <span class="hl">smarter.</span></h1>
-  <p>A 7-billion parameter open-source model, fine-tuned right, scores 96.96% on a public causal reasoning benchmark. GPT-4o scores 72% on the same test. We do this for your domain.</p>
-  <div class="hero-btns">
-    <a href="#contact" class="btn-primary">Work With Us</a>
-    <a href="https://colab.research.google.com/github/tunedailabs/tunedailabs/blob/main/causal_reasoning_demo.ipynb" target="_blank" class="btn-secondary">Run the Demo Free →</a>
+  <div class="hero-left">
+    <div class="hero-badge"><span class="badge-dot"></span>Open-Source LLM Fine-Tuning</div>
+    <h1>Is your AI<br>running <em>rough?</em></h1>
+    <h2>A 7-billion parameter open-source model, fine-tuned right, scores 96.96% on a public benchmark. GPT-4o scores 72%. We do this for your domain — medical, legal, financial, security.</h2>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-primary">Get a Free Tune-Up Quote</a>
+      <a href="https://colab.research.google.com/github/tunedailabs/tunedailabs/blob/main/causal_reasoning_demo.ipynb" target="_blank" class="btn-secondary">Run the Demo Free →</a>
+    </div>
+  </div>
+
+  <!-- MASCOT -->
+  <div class="mascot-wrap">
+    <div class="mascot-bubble">Your model, our garage.</div>
+    <svg width="220" height="310" viewBox="0 0 220 310" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Coveralls body -->
+      <rect x="30" y="180" width="160" height="110" rx="20" fill="#f8fafc"/>
+      <rect x="30" y="180" width="160" height="30" rx="0" fill="#e2e8f0"/>
+      <rect x="30" y="180" width="160" height="30" rx="20" fill="#e2e8f0"/>
+      <!-- Coveralls center stripe -->
+      <rect x="100" y="180" width="20" height="110" fill="#e2e8f0"/>
+      <!-- Buttons -->
+      <circle cx="110" cy="200" r="4" fill="#cbd5e1"/>
+      <circle cx="110" cy="218" r="4" fill="#cbd5e1"/>
+      <circle cx="110" cy="236" r="4" fill="#cbd5e1"/>
+      <!-- Name badge -->
+      <rect x="130" y="220" width="50" height="30" rx="5" fill="#f97316"/>
+      <text x="155" y="233" fill="white" font-size="7" text-anchor="middle" font-family="sans-serif" font-weight="bold">TunedAI</text>
+      <text x="155" y="243" fill="white" font-size="6" text-anchor="middle" font-family="sans-serif">LABS</text>
+      <!-- Left arm with wrench -->
+      <rect x="0" y="185" width="35" height="16" rx="8" fill="#f8fafc"/>
+      <!-- Wrench -->
+      <g transform="translate(-8, 190)">
+        <rect x="0" y="-4" width="28" height="8" rx="4" fill="#6b7280"/>
+        <ellipse cx="28" cy="0" rx="9" ry="7" fill="#6b7280"/>
+        <ellipse cx="30" cy="0" rx="5" ry="4" fill="#374151"/>
+      </g>
+      <!-- Right arm -->
+      <rect x="185" y="185" width="35" height="16" rx="8" fill="#f8fafc"/>
+      <!-- HEAD -->
+      <circle cx="110" cy="115" r="72" fill="#fde68a"/>
+      <!-- Mechanic cap brim -->
+      <ellipse cx="110" cy="55" rx="72" ry="14" fill="#1e3a5f"/>
+      <!-- Cap top -->
+      <rect x="38" y="48" width="144" height="28" rx="6" fill="#1e3a5f"/>
+      <!-- Cap logo patch -->
+      <rect x="88" y="53" width="44" height="18" rx="3" fill="#f97316"/>
+      <text x="110" y="65" fill="white" font-size="7" text-anchor="middle" font-family="sans-serif" font-weight="bold">TunedAI</text>
+      <!-- Ears -->
+      <ellipse cx="38" cy="118" rx="10" ry="14" fill="#fde68a"/>
+      <ellipse cx="182" cy="118" rx="10" ry="14" fill="#fde68a"/>
+      <!-- LEFT EYE (always open) -->
+      <ellipse cx="85" cy="112" rx="13" ry="15" fill="white"/>
+      <circle cx="88" cy="114" r="8" fill="#1e293b"/>
+      <circle cx="91" cy="110" r="3" fill="white"/>
+      <!-- RIGHT EYE — open state -->
+      <g class="eye-right-open">
+        <ellipse cx="135" cy="112" rx="13" ry="15" fill="white"/>
+        <circle cx="138" cy="114" r="8" fill="#1e293b"/>
+        <circle cx="141" cy="110" r="3" fill="white"/>
+      </g>
+      <!-- RIGHT EYE — wink state -->
+      <g class="eye-right-wink">
+        <path d="M122 112 Q135 100 148 112" stroke="#1e293b" stroke-width="4" stroke-linecap="round" fill="none"/>
+        <path d="M126 107 Q135 103 144 107" stroke="#1e293b" stroke-width="2" stroke-linecap="round" fill="none" opacity=".4"/>
+      </g>
+      <!-- Smile -->
+      <path d="M82 142 Q110 165 138 142" stroke="#92400e" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+      <!-- Cheek blush -->
+      <ellipse cx="66" cy="138" rx="13" ry="9" fill="#fca5a5" opacity=".5"/>
+      <ellipse cx="154" cy="138" rx="13" ry="9" fill="#fca5a5" opacity=".5"/>
+    </svg>
   </div>
 </div>
 
@@ -169,7 +259,7 @@ footer{padding:40px 48px;border-top:1px solid var(--border);display:flex;justify
     </div>
     <div>
       <div class="proof-num">7B</div>
-      <div class="proof-label">Parameters in the base model —<br>open-source, free to run</div>
+      <div class="proof-label">Parameters — open-source,<br>free to run anywhere</div>
     </div>
     <div>
       <div class="proof-num">+25%</div>
@@ -196,11 +286,11 @@ footer{padding:40px 48px;border-top:1px solid var(--border);display:flex;justify
     <tbody>
       <tr class="hl">
         <td><span class="model-name">TunedAI Labs — Qwen 2.5-7B</span></td>
-        <td style="font-weight:800;color:#3b82f6">96.96%</td>
+        <td style="font-weight:800;color:#f97316">96.96%</td>
         <td>
           <div class="score-bar-wrap">
-            <div class="score-bar-bg"><div class="score-bar-fill" style="width:97%;background:#3b82f6"></div></div>
-            <span class="score-val" style="color:#3b82f6">96.96%</span>
+            <div class="score-bar-bg"><div class="score-bar-fill" style="width:97%;background:#f97316"></div></div>
+            <span class="score-val" style="color:#f97316">96.96%</span>
           </div>
         </td>
         <td style="font-size:12px;color:#64748b">7B params · open-source · fine-tuned</td>
@@ -240,31 +330,31 @@ footer{padding:40px 48px;border-top:1px solid var(--border);display:flex;justify
       </tr>
     </tbody>
   </table>
-  <p style="font-size:12px;color:var(--muted);margin-top:14px">CLadder benchmark — 10,000+ questions. Public. Independently runnable. <a href="https://github.com/causalNLP/cladder" target="_blank" style="color:var(--blue)">Verify it yourself →</a></p>
+  <p style="font-size:12px;color:var(--muted);margin-top:14px">CLadder benchmark — 10,000+ questions. Public. Independently runnable. <a href="https://github.com/causalNLP/cladder" target="_blank" style="color:var(--orange)">Verify it yourself →</a></p>
 </div>
 
 <!-- HOW IT WORKS -->
 <div style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
 <div class="section" id="how-it-works">
-  <div class="sec-tag">The Process</div>
-  <h2>How fine-tuning works.</h2>
-  <p class="sec-sub">We take an existing open-source model and train it further on examples specific to your domain. The result is a model that thinks like an expert in your field — at a fraction of the cost of a large closed-source API.</p>
+  <div class="sec-tag">Under the Hood</div>
+  <h2>How a tune-up works.</h2>
+  <p class="sec-sub">We take an existing open-source model and train it further on examples specific to your domain. Same engine — better performance. You own the result forever.</p>
 
   <div class="steps">
     <div class="step">
       <div class="step-num">Step 01</div>
-      <h3>Define your task</h3>
-      <p>We start with the specific reasoning task you need the model to excel at — whether that's legal analysis, medical diagnosis support, financial modeling, or anything else that requires precise, domain-specific thinking.</p>
+      <h3>Diagnose the problem</h3>
+      <p>We benchmark your current model against your actual task. No guessing — you see exactly where it's underperforming before we touch anything.</p>
     </div>
     <div class="step">
       <div class="step-num">Step 02</div>
       <h3>Build the training set</h3>
-      <p>We curate or generate high-quality examples of the task done correctly. This is where most fine-tuning fails — we specialize in building training data that actually teaches the model to reason, not just pattern-match.</p>
+      <p>We curate high-quality examples of the task done correctly. This is where most fine-tuning fails — we specialize in training data that teaches reasoning, not surface-level pattern matching.</p>
     </div>
     <div class="step">
       <div class="step-num">Step 03</div>
-      <h3>Fine-tune and verify</h3>
-      <p>We train the model using efficient techniques (LoRA) that work on modest hardware. We measure the result on a held-out benchmark before and after — so you see exactly what changed, not just our claim that it improved.</p>
+      <h3>Tune and verify</h3>
+      <p>We fine-tune using efficient LoRA techniques and measure the result on a held-out benchmark. You get the before and after numbers — not just our word that it improved.</p>
     </div>
   </div>
 </div>
@@ -274,36 +364,36 @@ footer{padding:40px 48px;border-top:1px solid var(--border);display:flex;justify
 <div class="section">
   <div class="sec-tag">Why Open Source</div>
   <h2>Own your model.<br>Own your costs.</h2>
-  <p class="sec-sub">Every API call to a closed-source model is a recurring cost you don't control, on infrastructure you don't own, with a provider who can change pricing, deprecate your model, or go down. Fine-tuned open-source models eliminate all of that.</p>
+  <p class="sec-sub">Every API call to a closed-source model is a recurring bill you don't control, on servers you don't own, with a provider who can change pricing or go down anytime. A fine-tuned open-source model eliminates all of that.</p>
 
   <div class="why-grid">
     <div class="why-points">
       <div class="why-point">
-        <div class="why-icon blue">💰</div>
+        <div class="why-icon orange">💰</div>
         <div class="why-text">
           <h4>Dramatically lower cost</h4>
-          <p>A fine-tuned 7B model running on your own hardware costs a fraction of a GPT-4o API call. At scale, the difference is orders of magnitude.</p>
+          <p>A fine-tuned 7B model on your own hardware costs a fraction of a GPT-4o API call. At scale, the difference is orders of magnitude.</p>
         </div>
       </div>
       <div class="why-point">
-        <div class="why-icon green">🔒</div>
+        <div class="why-icon blue">🔒</div>
         <div class="why-text">
           <h4>Your data stays private</h4>
-          <p>No API call means no data leaving your environment. Critical for healthcare, legal, finance, and defense applications where data cannot touch a third-party server.</p>
+          <p>No API call means no data leaving your environment. Critical for healthcare, legal, finance, and defense where data cannot touch a third-party server.</p>
         </div>
       </div>
       <div class="why-point">
-        <div class="why-icon blue">⚡</div>
+        <div class="why-icon orange">⚡</div>
         <div class="why-text">
           <h4>No vendor dependency</h4>
-          <p>OpenAI deprecates models. Anthropic changes pricing. Google pivots. A fine-tuned model you own runs the same way forever, regardless of what any vendor decides.</p>
+          <p>OpenAI deprecates models. Anthropic changes pricing. A fine-tuned model you own runs the same way forever, regardless of what any vendor decides.</p>
         </div>
       </div>
       <div class="why-point">
-        <div class="why-icon green">🎯</div>
+        <div class="why-icon blue">🎯</div>
         <div class="why-text">
-          <h4>Better at your task</h4>
-          <p>A general-purpose model is trained to do everything adequately. A fine-tuned model is trained to do your specific task exceptionally. The benchmark above shows what that difference looks like.</p>
+          <h4>Better at your specific task</h4>
+          <p>A general model is trained to do everything adequately. A fine-tuned model is trained to do your task exceptionally. The benchmark above shows the difference.</p>
         </div>
       </div>
     </div>
@@ -312,7 +402,7 @@ footer{padding:40px 48px;border-top:1px solid var(--border);display:flex;justify
       <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:16px">Open-Source vs. Closed-Source API</div>
       <div class="compare-header">
         <div></div>
-        <div style="color:var(--green)">Open-Source</div>
+        <div style="color:#10b981">Open-Source</div>
         <div>Closed API</div>
       </div>
       <div class="compare-row"><span class="label">Cost per query</span><span class="open">~$0.00002</span><span class="closed">~$0.015</span></div>
@@ -321,7 +411,7 @@ footer{padding:40px 48px;border-top:1px solid var(--border);display:flex;justify
       <div class="compare-row"><span class="label">Deprecation risk</span><span class="open">None</span><span class="closed">High</span></div>
       <div class="compare-row"><span class="label">Domain accuracy</span><span class="open">Fine-tuned ✓</span><span class="closed">General</span></div>
       <div class="compare-row"><span class="label">Latency</span><span class="open">On your hardware</span><span class="closed">API round-trip</span></div>
-      <p style="font-size:11px;color:var(--muted);margin-top:16px;line-height:1.6">Cost estimate at 1M queries/month. Closed API cost based on GPT-4o pricing. Open-source cost assumes A100 cloud GPU amortized over 24 months.</p>
+      <p style="font-size:11px;color:var(--muted);margin-top:16px;line-height:1.6">Cost estimate at 1M queries/month. Closed API based on GPT-4o pricing. Open-source assumes A100 cloud GPU amortized over 24 months.</p>
     </div>
   </div>
 </div>
@@ -330,32 +420,32 @@ footer{padding:40px 48px;border-top:1px solid var(--border);display:flex;justify
 <div style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
 <div class="section" id="services">
   <div class="sec-tag">What We Do</div>
-  <h2>Services.</h2>
+  <h2>Full-service garage.</h2>
   <p class="sec-sub">We work with teams who have a specific reasoning problem that general-purpose models don't solve well enough.</p>
 
   <div class="services">
     <div class="svc">
-      <div class="svc-icon">🧠</div>
+      <div class="svc-icon">🔧</div>
       <h3>Domain Fine-Tuning</h3>
-      <p>We fine-tune an open-source model on your specific task — legal reasoning, medical analysis, financial modeling, security analysis, or any other domain that requires precision. You get the adapter weights and can run the model anywhere.</p>
+      <p>We fine-tune an open-source model on your specific task — legal, medical, financial, security, or any domain requiring precision. You get the weights and can run the model anywhere.</p>
       <span class="svc-tag">Most Popular</span>
     </div>
     <div class="svc">
       <div class="svc-icon">📊</div>
       <h3>Benchmark & Evaluation</h3>
-      <p>We design a benchmark specific to your task and measure current model performance before and after fine-tuning. You get a verifiable number — not a vague claim of "improvement."</p>
+      <p>We design a benchmark for your task and measure performance before and after. You get a verifiable number — not a vague claim of "improvement."</p>
       <span class="svc-tag">Always Included</span>
     </div>
     <div class="svc">
       <div class="svc-icon">🗂️</div>
       <h3>Training Data Curation</h3>
-      <p>Most fine-tuning fails because of bad training data. We build or curate the dataset that actually teaches reasoning — not surface-level pattern matching. This is the hard part. We've solved it.</p>
+      <p>Most fine-tuning fails because of bad training data. We build the dataset that actually teaches reasoning — not surface-level pattern matching. This is the hard part.</p>
       <span class="svc-tag">The Hard Part</span>
     </div>
     <div class="svc">
       <div class="svc-icon">🚀</div>
       <h3>Deployment Support</h3>
-      <p>We help you deploy the fine-tuned model in your environment — on-premise, private cloud, or air-gapped. We write the inference API and integrate it with your existing stack.</p>
+      <p>We help you deploy the fine-tuned model in your environment — on-premise, private cloud, or air-gapped. We write the inference API and integrate with your stack.</p>
       <span class="svc-tag">Optional Add-On</span>
     </div>
     <div class="svc">
@@ -367,7 +457,7 @@ footer{padding:40px 48px;border-top:1px solid var(--border);display:flex;justify
     <div class="svc">
       <div class="svc-icon">🔬</div>
       <h3>Research Collaboration</h3>
-      <p>If you have a novel reasoning problem — something no existing model handles well — we can research and develop a fine-tuning approach from scratch. We publish results when appropriate.</p>
+      <p>If you have a novel reasoning problem — something no existing model handles well — we research and develop a fine-tuning approach from scratch. We publish when appropriate.</p>
       <span class="svc-tag">Custom Scope</span>
     </div>
   </div>
@@ -378,13 +468,13 @@ footer{padding:40px 48px;border-top:1px solid var(--border);display:flex;justify
 <div class="cta-section" id="contact">
   <div class="cta-inner">
     <div class="sec-tag" style="margin-bottom:16px">Get Started</div>
-    <h2>Tell us your reasoning problem.</h2>
-    <p>We'll tell you whether fine-tuning can solve it, which model to use, and what a realistic benchmark score looks like. No commitment — just an honest conversation.</p>
+    <h2>Tell us where your AI is struggling.</h2>
+    <p>We'll tell you whether fine-tuning can fix it, which model to use, and what a realistic benchmark score looks like. No commitment — just an honest conversation.</p>
     <div class="cta-email">
       <input class="email-input" type="email" placeholder="your@email.com">
       <a href="mailto:hello@tunedailabs.com" class="btn-primary">Get In Touch</a>
     </div>
-    <p style="font-size:12px;color:var(--muted);margin-top:16px">Or email us directly: <a href="mailto:hello@tunedailabs.com" style="color:var(--blue)">hello@tunedailabs.com</a></p>
+    <p style="font-size:12px;color:var(--muted);margin-top:16px">Or email us directly: <a href="mailto:hello@tunedailabs.com" style="color:var(--orange)">hello@tunedailabs.com</a></p>
   </div>
 </div>
 
