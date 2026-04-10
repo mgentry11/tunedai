@@ -46,20 +46,24 @@ If you leave them blank those columns will say "No API key provided" and the res
 
 ## What You Are Testing
 
-The notebook asks six questions drawn from classic texts — all written before AI existed. The correct answers were established by human experts decades ago. This rules out the models just pattern-matching from the internet.
+The notebook asks ten questions drawn from classic texts — all written before AI existed. The correct answers were established by human experts decades ago. This rules out the models just pattern-matching from the internet.
 
-| Question | Original Source | Year |
-|---|---|---|
-| Kidney stone treatment paradox (Simpson's Paradox) | E.H. Simpson | 1951 |
-| Cholera and the Broad Street water pump | John Snow | 1854 |
-| Handwashing and childbed fever | Ignaz Semmelweis | 1847 |
-| Smoking and lung cancer — no experiment was run | Bradford Hill | 1965 |
-| Billiard balls and the limits of cause-and-effect logic | David Hume | 1748 |
-| Why random assignment changes what we can conclude | R.A. Fisher | 1935 |
+| # | Question | Source | Year |
+|---|---|---|---|
+| 1 | Kidney stone treatment paradox (Simpson's Paradox) | E.H. Simpson | 1951 |
+| 2 | Bullet holes on returning bombers (Survivorship Bias) | Abraham Wald | 1943 |
+| 3 | Factory lighting and productivity (Hawthorne Effect) | Elton Mayo | 1924–32 |
+| 4 | Ice cream sales and drowning deaths (Common Cause) | Classic epidemiology | 1950s |
+| 5 | More nurses, more deaths? (Reverse Causation) | Classic medical confounding | — |
+| 6 | Handwashing and childbed fever | Ignaz Semmelweis | 1847 |
+| 7 | Cholera and the Broad Street water pump | John Snow | 1854 |
+| 8 | Smoking and lung cancer — no experiment was run | Bradford Hill | 1965 |
+| 9 | Two water companies, same street (Natural Experiment) | John Snow | 1855 |
+| 10 | Twelve sailors and six treatments (First Controlled Trial) | James Lind | 1747 |
 
-There is also a cell at the bottom where you can type your own question.
+There is also a cell at the bottom where you can enter your own question. A template is provided — the model was fine-tuned on short structured causal questions, so the template helps you write in the format where it performs best.
 
-These six are a representative sample. We tested the model across a much wider range of causal reasoning problems — different domains, different structures, different difficulty levels — and saw consistent results in the same range. The full benchmark score of 96.96% across 10,112 questions reflects that broader testing.
+These ten are a representative sample. We tested the model across a much wider range of causal reasoning problems — different domains, different structures, different difficulty levels — and saw consistent results in the same range. The full benchmark score of 96.96% across 10,112 questions reflects that broader testing.
 
 ---
 
