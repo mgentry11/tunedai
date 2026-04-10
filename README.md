@@ -1,6 +1,6 @@
 # TunedAI Labs — Causal Reasoning Benchmark
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tunedailabs/tunedai/blob/main/causal_reasoning_demo.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tunedailabs/tunedailabs/blob/main/causal_reasoning_demo.ipynb)
 
 We fine-tuned Qwen 2.5-7B on causal reasoning and scored **96.96%** on the CLadder benchmark. GPT-4o scores ~72% on the same test. Base Qwen scores ~62%.
 
@@ -76,7 +76,7 @@ The benchmark is public: [CLadder on GitHub](https://github.com/causalNLP/cladde
 
 ## Share Your Results
 
-After running the notebook, open a [GitHub Issue](https://github.com/tunedailabs/tunedai/issues/new) and paste what you saw. Tell us:
+After running the notebook, open a [GitHub Issue](https://github.com/tunedailabs/tunedailabs/issues/new) and paste what you saw. Tell us:
 
 - Which questions the TunedAI Labs model got right that the others got wrong
 - Anything surprising
