@@ -59,6 +59,8 @@ The notebook asks six questions drawn from classic texts — all written before 
 
 There is also a cell at the bottom where you can type your own question.
 
+These six are a representative sample. We tested the model across a much wider range of causal reasoning problems — different domains, different structures, different difficulty levels — and saw consistent results in the same range. The full benchmark score of 96.96% across 10,112 questions reflects that broader testing.
+
 ---
 
 ## The Benchmark Results
