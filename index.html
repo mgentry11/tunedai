@@ -3,448 +3,401 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TunedAI — Fine-Tuned LLMs for Real Reasoning</title>
+<title>TunedAI Labs — We Make Open-Source Models Smarter</title>
+<meta name="description" content="TunedAI Labs fine-tunes open-source LLMs for specialized reasoning tasks. A 7B model, fine-tuned right, scores 96.96% on CLadder — beating GPT-4o's 72%.">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#080c18;
-  --surface:#0e1528;
-  --card:#131c35;
-  --border:#1e2d50;
-  --blue:#4f9cf9;
-  --green:#3ecf8e;
-  --orange:#f97316;
-  --purple:#a78bfa;
-  --text:#e8edf5;
-  --muted:#6b7fa3;
+  --bg:#07090f;
+  --surface:#0d1117;
+  --card:#111827;
+  --border:#1f2937;
+  --blue:#3b82f6;
+  --blue-dim:rgba(59,130,246,.12);
+  --blue-border:rgba(59,130,246,.25);
+  --green:#10b981;
+  --green-dim:rgba(16,185,129,.1);
+  --purple:#8b5cf6;
+  --text:#f1f5f9;
+  --muted:#64748b;
+  --soft:#94a3b8;
   --font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 }
-body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6}
+body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
 
-nav{display:flex;justify-content:space-between;align-items:center;padding:20px 48px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(8,12,24,.95);backdrop-filter:blur(8px);z-index:100}
-.logo{font-size:20px;font-weight:800;letter-spacing:-.5px}
+/* NAV */
+nav{display:flex;justify-content:space-between;align-items:center;padding:18px 48px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(7,9,15,.92);backdrop-filter:blur(12px);z-index:100}
+.logo{font-size:18px;font-weight:800;letter-spacing:-.5px;color:var(--text)}
 .logo span{color:var(--blue)}
-.nav-links{display:flex;gap:32px;list-style:none}
-.nav-links a{color:var(--muted);text-decoration:none;font-size:14px;transition:color .2s}
+.nav-links{display:flex;gap:32px;list-style:none;align-items:center}
+.nav-links a{color:var(--muted);font-size:14px;transition:color .2s}
 .nav-links a:hover{color:var(--text)}
-.nav-cta{background:var(--blue);color:#fff;padding:8px 20px;border-radius:6px;font-size:13px;font-weight:700;text-decoration:none}
+.nav-cta{background:var(--blue);color:#fff!important;padding:8px 20px;border-radius:6px;font-size:13px;font-weight:700}
+.nav-cta:hover{background:#2563eb!important}
 
-.hero{text-align:center;padding:100px 48px 80px;max-width:860px;margin:0 auto}
-.hero-badge{display:inline-block;background:rgba(79,156,249,.12);border:1px solid rgba(79,156,249,.3);color:var(--blue);font-size:12px;font-weight:700;letter-spacing:2px;padding:5px 14px;border-radius:20px;margin-bottom:24px}
-.hero h1{font-size:54px;font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:20px}
-.hero h1 span{color:var(--blue)}
-.hero p{font-size:18px;color:var(--muted);max-width:580px;margin:0 auto 40px;line-height:1.7}
-.hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
-.btn-primary{background:var(--blue);color:#fff;padding:14px 28px;border-radius:8px;font-size:15px;font-weight:700;text-decoration:none}
-.btn-secondary{background:transparent;color:var(--text);padding:14px 28px;border-radius:8px;font-size:15px;font-weight:600;text-decoration:none;border:1px solid var(--border)}
+/* HERO */
+.hero{text-align:center;padding:120px 48px 96px;max-width:900px;margin:0 auto;position:relative}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--blue-dim);border:1px solid var(--blue-border);color:var(--blue);font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:6px 16px;border-radius:20px;margin-bottom:32px}
+.badge-dot{width:6px;height:6px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero h1{font-size:clamp(42px,6vw,72px);font-weight:900;letter-spacing:-2px;line-height:1.05;margin-bottom:24px}
+.hero h1 .hl{color:var(--blue)}
+.hero p{font-size:18px;color:var(--soft);max-width:560px;margin:0 auto 48px;line-height:1.75}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-primary{background:var(--blue);color:#fff;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:700;transition:background .2s;display:inline-block}
+.btn-primary:hover{background:#2563eb}
+.btn-secondary{background:transparent;color:var(--text);padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;border:1px solid var(--border);transition:border-color .2s;display:inline-block}
+.btn-secondary:hover{border-color:var(--soft)}
 
-.proof-bar{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:40px 48px}
-.proof-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:40px;text-align:center}
-.proof-num{font-size:42px;font-weight:900;color:var(--blue);letter-spacing:-1px}
-.proof-label{font-size:13px;color:var(--muted);margin-top:4px}
+/* PROOF BAR */
+.proof{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:48px}
+.proof-inner{max-width:960px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:48px;text-align:center}
+.proof-num{font-size:48px;font-weight:900;letter-spacing:-2px;color:var(--blue)}
+.proof-label{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.5}
 
-section{padding:80px 48px;max-width:1100px;margin:0 auto}
-.section-tag{font-size:11px;font-weight:700;letter-spacing:3px;color:var(--blue);text-transform:uppercase;margin-bottom:12px}
-h2{font-size:36px;font-weight:900;letter-spacing:-.5px;margin-bottom:16px}
-.section-sub{font-size:16px;color:var(--muted);max-width:620px;margin-bottom:48px;line-height:1.7}
+/* BENCHMARK */
+.section{padding:96px 48px;max-width:1080px;margin:0 auto}
+.sec-tag{font-size:11px;font-weight:700;letter-spacing:3px;color:var(--blue);text-transform:uppercase;margin-bottom:14px}
+h2{font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-.5px;margin-bottom:16px;line-height:1.15}
+.sec-sub{font-size:16px;color:var(--soft);max-width:580px;margin-bottom:56px;line-height:1.75}
 
-.bench-table{width:100%;border-collapse:collapse;margin-bottom:16px}
-.bench-table th{text-align:left;font-size:11px;font-weight:700;letter-spacing:2px;color:var(--muted);padding:10px 16px;border-bottom:1px solid var(--border)}
-.bench-table td{padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px}
-.bench-table tr:last-child td{border-bottom:none}
-.bench-table tr.highlight td{background:rgba(79,156,249,.06)}
+.bench-table{width:100%;border-collapse:collapse;font-size:14px}
+.bench-table th{text-align:left;padding:10px 16px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)}
+.bench-table td{padding:16px;border-bottom:1px solid var(--border)}
+.bench-table tr.hl td{background:var(--blue-dim)}
+.bench-table tr.hl .model-name{color:var(--blue);font-weight:800}
 .score-bar-wrap{display:flex;align-items:center;gap:12px}
-.score-bar{height:6px;border-radius:3px}
-.score-val{font-weight:800;font-size:15px;min-width:52px}
-.badge-best{background:rgba(62,207,142,.15);color:var(--green);font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:4px;margin-left:8px}
+.score-bar-bg{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.score-bar-fill{height:100%;border-radius:4px;transition:width .6s}
+.score-val{font-size:13px;font-weight:700;min-width:50px;text-align:right}
 
-/* DEMO */
-.demo-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.demo-header{padding:14px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.demo-title{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--muted)}
-.demo-examples{display:flex;gap:8px;padding:16px 24px;border-bottom:1px solid var(--border);flex-wrap:wrap}
-.demo-example{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:8px 14px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .2s}
-.demo-example:hover,.demo-example.active{border-color:var(--blue);color:var(--text)}
-.demo-example .q-tag{font-size:10px;color:var(--blue);font-weight:700;display:block;margin-bottom:2px}
-.demo-input-row{display:flex;gap:12px;padding:16px 24px;border-bottom:1px solid var(--border)}
-.demo-input{flex:1;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--text);font-size:13px;font-family:var(--font);resize:none;height:68px}
-.demo-input:focus{outline:none;border-color:var(--blue)}
-.demo-run{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:0 24px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
+/* HOW IT WORKS */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:56px}
+.step{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:32px}
+.step-num{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--blue);text-transform:uppercase;margin-bottom:16px}
+.step h3{font-size:18px;font-weight:800;margin-bottom:10px}
+.step p{font-size:14px;color:var(--soft);line-height:1.7}
 
-/* 4-MODEL GRID */
-.model-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
-.model-col{padding:20px 24px;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
-.model-col:nth-child(2){border-right:none}
-.model-col:nth-child(3){border-bottom:none}
-.model-col:nth-child(4){border-right:none;border-bottom:none}
-.model-col.featured{background:rgba(62,207,142,.03)}
-.model-label{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.model-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.dot-base{background:var(--muted)}
-.dot-gpt{background:var(--orange)}
-.dot-claude{background:var(--purple)}
-.dot-tuned{background:var(--green)}
-.model-name{font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}
-.model-name.tuned{color:var(--green)}
-.model-text{font-size:12.5px;line-height:1.7;color:var(--text);min-height:90px}
-.model-verdict{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:4px}
-.verdict-wrong{background:rgba(239,68,68,.12);color:#ef4444}
-.verdict-partial{background:rgba(249,115,22,.12);color:var(--orange)}
-.verdict-right{background:rgba(62,207,142,.12);color:var(--green)}
+/* WHY OPEN SOURCE */
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;margin-top:0}
+.why-points{display:flex;flex-direction:column;gap:24px}
+.why-point{display:flex;gap:16px;align-items:flex-start}
+.why-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;margin-top:2px}
+.why-icon.blue{background:var(--blue-dim);border:1px solid var(--blue-border)}
+.why-icon.green{background:var(--green-dim);border:1px solid rgba(16,185,129,.25)}
+.why-text h4{font-size:15px;font-weight:700;margin-bottom:4px}
+.why-text p{font-size:14px;color:var(--soft);line-height:1.65}
+.why-visual{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:32px}
+.compare-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px}
+.compare-row:last-child{border-bottom:none}
+.compare-row .label{color:var(--soft)}
+.compare-row .open{color:var(--green);font-weight:700}
+.compare-row .closed{color:var(--muted)}
+.compare-header{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
 
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-.step{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:28px}
-.step-num{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--blue);margin-bottom:12px}
-.step h3{font-size:16px;font-weight:800;margin-bottom:8px}
-.step p{font-size:13px;color:var(--muted);line-height:1.6}
+/* SERVICES */
+.services{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.svc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;transition:border-color .2s}
+.svc:hover{border-color:var(--blue)}
+.svc-icon{font-size:28px;margin-bottom:16px}
+.svc h3{font-size:16px;font-weight:800;margin-bottom:8px}
+.svc p{font-size:13px;color:var(--soft);line-height:1.65}
+.svc-tag{display:inline-block;margin-top:14px;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--blue);text-transform:uppercase}
 
-.price-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-.price-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:32px}
-.price-card.featured{border-color:var(--blue)}
-.price-tag{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--blue);margin-bottom:12px}
-.price-amount{font-size:32px;font-weight:900;margin-bottom:4px}
-.price-desc{font-size:13px;color:var(--muted);margin-bottom:24px}
-.price-features{list-style:none}
-.price-features li{font-size:13px;color:var(--muted);padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px}
-.price-features li:last-child{border-bottom:none}
-.price-features li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0}
+/* CTA */
+.cta-section{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:96px 48px;text-align:center}
+.cta-inner{max-width:620px;margin:0 auto}
+.cta-inner h2{font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-.5px;margin-bottom:16px}
+.cta-inner p{font-size:16px;color:var(--soft);margin-bottom:40px;line-height:1.75}
+.cta-email{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.email-input{background:var(--card);border:1px solid var(--border);color:var(--text);padding:13px 20px;border-radius:8px;font-size:14px;width:280px;outline:none;transition:border-color .2s}
+.email-input:focus{border-color:var(--blue)}
+.email-input::placeholder{color:var(--muted)}
 
-.contact-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:48px;text-align:center;max-width:600px;margin:0 auto}
-.contact-wrap h2{margin-bottom:12px}
-.contact-wrap p{color:var(--muted);margin-bottom:32px}
-.form-row{display:flex;flex-direction:column;gap:12px;text-align:left}
-.form-input{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--text);font-size:14px;font-family:var(--font)}
-.form-input:focus{outline:none;border-color:var(--blue)}
-textarea.form-input{height:100px;resize:none}
-.form-submit{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px}
-
-footer{border-top:1px solid var(--border);padding:32px 48px;display:flex;justify-content:space-between;align-items:center}
-.footer-logo{font-size:16px;font-weight:800}
+/* FOOTER */
+footer{padding:40px 48px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-logo{font-size:15px;font-weight:800;letter-spacing:-.3px}
 .footer-logo span{color:var(--blue)}
+.footer-links{display:flex;gap:24px}
+.footer-links a{font-size:13px;color:var(--muted);transition:color .2s}
+.footer-links a:hover{color:var(--text)}
 .footer-copy{font-size:12px;color:var(--muted)}
-.divider{border:none;border-top:1px solid var(--border);margin:0}
+
+@media(max-width:768px){
+  nav{padding:16px 24px}
+  .hero{padding:80px 24px 64px}
+  .proof-inner{grid-template-columns:1fr;gap:32px}
+  .section{padding:64px 24px}
+  .steps{grid-template-columns:1fr}
+  .why-grid{grid-template-columns:1fr}
+  .services{grid-template-columns:1fr}
+  footer{padding:32px 24px;flex-direction:column;text-align:center}
+}
 </style>
 </head>
 <body>
 
 <nav>
-  <div class="logo">Tuned<span>AI</span></div>
+  <a href="/" class="logo">TunedAI<span>Labs</span></a>
   <ul class="nav-links">
+    <li><a href="#how-it-works">How It Works</a></li>
     <li><a href="#benchmark">Benchmark</a></li>
-    <li><a href="#demo">Live Demo</a></li>
-    <li><a href="#how">How It Works</a></li>
-    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="https://colab.research.google.com/github/tunedailabs/tunedai/blob/main/causal_reasoning_demo.ipynb" target="_blank">Live Demo</a></li>
+    <li><a href="#contact" class="nav-cta">Get Started</a></li>
   </ul>
-  <a href="#contact" class="nav-cta">Get Started</a>
 </nav>
 
+<!-- HERO -->
 <div class="hero">
-  <div class="hero-badge">OPEN-SOURCE LLM FINE-TUNING</div>
-  <h1>We make LLMs that actually <span>reason</span></h1>
-  <p>We fine-tune open-source models on your domain data. Our flagship causal reasoning model scores 96.96% on the CLadder benchmark — near the theoretical ceiling. General LLMs score in the low 60s.</p>
+  <div class="hero-badge"><span class="badge-dot"></span>Fine-Tuning Open-Source LLMs</div>
+  <h1>We make open-source<br>models <span class="hl">smarter.</span></h1>
+  <p>A 7-billion parameter open-source model, fine-tuned right, scores 96.96% on a public causal reasoning benchmark. GPT-4o scores 72% on the same test. We do this for your domain.</p>
   <div class="hero-btns">
-    <a href="#demo" class="btn-primary">Try the Live Demo</a>
-    <a href="#contact" class="btn-secondary">Talk to Us</a>
+    <a href="#contact" class="btn-primary">Work With Us</a>
+    <a href="https://colab.research.google.com/github/tunedailabs/tunedai/blob/main/causal_reasoning_demo.ipynb" target="_blank" class="btn-secondary">Run the Demo Free →</a>
   </div>
 </div>
 
-<div class="proof-bar">
+<!-- PROOF BAR -->
+<div class="proof">
   <div class="proof-inner">
     <div>
       <div class="proof-num">96.96%</div>
-      <div class="proof-label">CLadder Benchmark — Causal Reasoning</div>
+      <div class="proof-label">CLadder benchmark score<br>on our causal reasoning model</div>
     </div>
     <div>
       <div class="proof-num">7B</div>
-      <div class="proof-label">Parameter base model — runs anywhere</div>
+      <div class="proof-label">Parameters in the base model —<br>open-source, free to run</div>
     </div>
     <div>
-      <div class="proof-num">+34pt</div>
-      <div class="proof-label">Over base Qwen on the same benchmark</div>
+      <div class="proof-num">+25%</div>
+      <div class="proof-label">Above GPT-4o on the same<br>publicly verifiable benchmark</div>
     </div>
   </div>
 </div>
 
-<section id="benchmark">
-  <div class="section-tag">The Proof</div>
-  <h2>Benchmark Results</h2>
-  <p class="section-sub">CLadder is a public causal reasoning benchmark with 10,000+ questions. The correct answers were established by human experts from published academic sources decades ago — models cannot have memorized them. Here's how models compare.</p>
+<!-- BENCHMARK -->
+<div class="section" id="benchmark">
+  <div class="sec-tag">Verified Results</div>
+  <h2>Smaller model.<br>Better answers.</h2>
+  <p class="sec-sub">We took Qwen 2.5-7B — a free, open-source model anyone can download — and fine-tuned it on causal reasoning. The results are publicly verifiable. Run the benchmark yourself.</p>
+
   <table class="bench-table">
     <thead>
-      <tr><th>Model</th><th>CLadder Score</th><th>Type</th></tr>
+      <tr>
+        <th>Model</th>
+        <th>Score</th>
+        <th style="width:40%">Accuracy</th>
+        <th>Notes</th>
+      </tr>
     </thead>
     <tbody>
-      <tr class="highlight">
-        <td><strong>TunedAI Causal Model</strong> (Qwen 2.5-7B)<span class="badge-best">BEST</span></td>
-        <td><div class="score-bar-wrap"><div class="score-bar" style="width:190px;background:var(--green)"></div><span class="score-val" style="color:var(--green)">96.96%</span></div></td>
-        <td style="color:var(--green);font-weight:700">Fine-tuned</td>
+      <tr class="hl">
+        <td><span class="model-name">TunedAI Labs — Qwen 2.5-7B</span></td>
+        <td style="font-weight:800;color:#3b82f6">96.96%</td>
+        <td>
+          <div class="score-bar-wrap">
+            <div class="score-bar-bg"><div class="score-bar-fill" style="width:97%;background:#3b82f6"></div></div>
+            <span class="score-val" style="color:#3b82f6">96.96%</span>
+          </div>
+        </td>
+        <td style="font-size:12px;color:#64748b">7B params · open-source · fine-tuned</td>
       </tr>
       <tr>
-        <td>GPT-4o</td>
-        <td><div class="score-bar-wrap"><div class="score-bar" style="width:130px;background:var(--orange)"></div><span class="score-val" style="color:var(--orange)">~72%</span></div></td>
-        <td style="color:var(--muted)">General purpose</td>
+        <td style="color:#94a3b8">GPT-4o</td>
+        <td style="color:#94a3b8">~72%</td>
+        <td>
+          <div class="score-bar-wrap">
+            <div class="score-bar-bg"><div class="score-bar-fill" style="width:72%;background:#4b5563"></div></div>
+            <span class="score-val" style="color:#64748b">72%</span>
+          </div>
+        </td>
+        <td style="font-size:12px;color:#64748b">General purpose · closed source</td>
       </tr>
       <tr>
-        <td>Claude 3.5 Sonnet</td>
-        <td><div class="score-bar-wrap"><div class="score-bar" style="width:122px;background:var(--purple)"></div><span class="score-val" style="color:var(--purple)">~68%</span></div></td>
-        <td style="color:var(--muted)">General purpose</td>
+        <td style="color:#94a3b8">Claude 3.5 Sonnet</td>
+        <td style="color:#94a3b8">~68%</td>
+        <td>
+          <div class="score-bar-wrap">
+            <div class="score-bar-bg"><div class="score-bar-fill" style="width:68%;background:#4b5563"></div></div>
+            <span class="score-val" style="color:#64748b">68%</span>
+          </div>
+        </td>
+        <td style="font-size:12px;color:#64748b">General purpose · closed source</td>
       </tr>
       <tr>
-        <td>Base Qwen 2.5-7B</td>
-        <td><div class="score-bar-wrap"><div class="score-bar" style="width:90px;background:var(--muted)"></div><span class="score-val">~62%</span></div></td>
-        <td style="color:var(--muted)">Untuned</td>
+        <td style="color:#94a3b8">Base Qwen 2.5-7B</td>
+        <td style="color:#94a3b8">~62%</td>
+        <td>
+          <div class="score-bar-wrap">
+            <div class="score-bar-bg"><div class="score-bar-fill" style="width:62%;background:#4b5563"></div></div>
+            <span class="score-val" style="color:#64748b">62%</span>
+          </div>
+        </td>
+        <td style="font-size:12px;color:#64748b">Same model · no fine-tuning</td>
       </tr>
     </tbody>
   </table>
-  <p style="font-size:12px;color:var(--muted)">CLadder benchmark — 10,000+ questions covering association, intervention, and counterfactual reasoning. Public benchmark — verify independently.</p>
-</section>
+  <p style="font-size:12px;color:var(--muted);margin-top:14px">CLadder benchmark — 10,000+ questions. Public. Independently runnable. <a href="https://github.com/causalNLP/cladder" target="_blank" style="color:var(--blue)">Verify it yourself →</a></p>
+</div>
 
-<hr class="divider">
+<!-- HOW IT WORKS -->
+<div style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+<div class="section" id="how-it-works">
+  <div class="sec-tag">The Process</div>
+  <h2>How fine-tuning works.</h2>
+  <p class="sec-sub">We take an existing open-source model and train it further on examples specific to your domain. The result is a model that thinks like an expert in your field — at a fraction of the cost of a large closed-source API.</p>
 
-<section id="demo" style="max-width:1200px">
-  <div class="section-tag">Live Demo</div>
-  <h2>Four Models, Same Question</h2>
-  <p class="section-sub">All test questions are drawn from pre-AI sources — classic epidemiology, statistics, and philosophy texts. The correct answers were established by human experts before LLMs existed.</p>
-
-  <div class="demo-wrap">
-    <div class="demo-header">
-      <div class="demo-title">CAUSAL REASONING — 4-MODEL COMPARISON</div>
-      <div style="font-size:11px;color:var(--muted)">Sources: Snow 1854 · Simpson 1951 · Bradford Hill 1965</div>
-    </div>
-    <div class="demo-examples">
-      <div class="demo-example active" onclick="loadExample(0, this)">
-        <span class="q-tag">Causal Reasoning · Simpson 1951</span>
-        Kidney stone treatment paradox
-      </div>
-      <div class="demo-example" onclick="loadExample(1, this)">
-        <span class="q-tag">Causal Inference · Bradford Hill 1965</span>
-        Smoking and lung cancer
-      </div>
-      <div class="demo-example" onclick="loadExample(2, this)">
-        <span class="q-tag">Counterfactual Reasoning · Hume 1748</span>
-        But-for causation test
-      </div>
-      <div class="demo-example" onclick="loadExample(3, this)">
-        <span class="q-tag">Causal Reasoning · John Snow 1854</span>
-        Cholera and the water pump
-      </div>
-    </div>
-    <div class="demo-input-row">
-      <textarea class="demo-input" id="demoInput" placeholder="Type your own causal reasoning question..."></textarea>
-      <button class="demo-run" onclick="runDemo()">Run →</button>
-    </div>
-
-    <!-- 4-MODEL OUTPUT GRID -->
-    <div class="model-grid">
-      <div class="model-col">
-        <div class="model-label">
-          <div class="model-dot dot-base"></div>
-          <div class="model-name">Base Qwen 2.5-7B — Untuned</div>
-        </div>
-        <div class="model-text" id="out-base">Select a question above.</div>
-        <div id="ver-base"></div>
-      </div>
-      <div class="model-col">
-        <div class="model-label">
-          <div class="model-dot dot-gpt"></div>
-          <div class="model-name">GPT-4o</div>
-        </div>
-        <div class="model-text" id="out-gpt">Select a question above.</div>
-        <div id="ver-gpt"></div>
-      </div>
-      <div class="model-col">
-        <div class="model-label">
-          <div class="model-dot dot-claude"></div>
-          <div class="model-name">Claude 3.5 Sonnet</div>
-        </div>
-        <div class="model-text" id="out-claude">Select a question above.</div>
-        <div id="ver-claude"></div>
-      </div>
-      <div class="model-col featured">
-        <div class="model-label">
-          <div class="model-dot dot-tuned"></div>
-          <div class="model-name tuned">TunedAI Causal Model</div>
-        </div>
-        <div class="model-text" id="out-tuned">Select a question above.</div>
-        <div id="ver-tuned"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<hr class="divider">
-
-<section id="how">
-  <div class="section-tag">Process</div>
-  <h2>How It Works</h2>
-  <p class="section-sub">We take proven open-source base models and fine-tune them on your domain data using our training pipeline.</p>
   <div class="steps">
     <div class="step">
-      <div class="step-num">STEP 01</div>
-      <h3>Data Audit</h3>
-      <p>We review your domain data, identify reasoning tasks, and define the benchmark we'll use to measure success. You know what good answers look like — we structure the training around that.</p>
+      <div class="step-num">Step 01</div>
+      <h3>Define your task</h3>
+      <p>We start with the specific reasoning task you need the model to excel at — whether that's legal analysis, medical diagnosis support, financial modeling, or anything else that requires precise, domain-specific thinking.</p>
     </div>
     <div class="step">
-      <div class="step-num">STEP 02</div>
-      <h3>Fine-Tuning</h3>
-      <p>We fine-tune a base model (Qwen, Llama, Mistral) using LoRA — efficient, targeted training. Delivered as adapter weights or a hosted endpoint.</p>
+      <div class="step-num">Step 02</div>
+      <h3>Build the training set</h3>
+      <p>We curate or generate high-quality examples of the task done correctly. This is where most fine-tuning fails — we specialize in building training data that actually teaches the model to reason, not just pattern-match.</p>
     </div>
     <div class="step">
-      <div class="step-num">STEP 03</div>
-      <h3>Benchmark & Deliver</h3>
-      <p>We run your model against a defined benchmark before delivery. You get a score, not just a model. Hosted API or weights — your choice.</p>
+      <div class="step-num">Step 03</div>
+      <h3>Fine-tune and verify</h3>
+      <p>We train the model using efficient techniques (LoRA) that work on modest hardware. We measure the result on a held-out benchmark before and after — so you see exactly what changed, not just our claim that it improved.</p>
     </div>
   </div>
-</section>
+</div>
+</div>
 
-<hr class="divider">
+<!-- WHY OPEN SOURCE -->
+<div class="section">
+  <div class="sec-tag">Why Open Source</div>
+  <h2>Own your model.<br>Own your costs.</h2>
+  <p class="sec-sub">Every API call to a closed-source model is a recurring cost you don't control, on infrastructure you don't own, with a provider who can change pricing, deprecate your model, or go down. Fine-tuned open-source models eliminate all of that.</p>
 
-<section id="pricing">
-  <div class="section-tag">Pricing</div>
-  <h2>Straightforward Pricing</h2>
-  <p class="section-sub">Project-based for one-time work. Hosted for ongoing access.</p>
-  <div class="price-grid">
-    <div class="price-card">
-      <div class="price-tag">PROJECT</div>
-      <div class="price-amount">$15K–40K</div>
-      <div class="price-desc">One-time fine-tuning engagement. You own the weights.</div>
-      <ul class="price-features">
-        <li>Data audit and scoping</li>
-        <li>Fine-tuning on your domain data</li>
-        <li>Benchmark report before delivery</li>
-        <li>Adapter weights delivered to you</li>
-        <li>30-day support after delivery</li>
-      </ul>
+  <div class="why-grid">
+    <div class="why-points">
+      <div class="why-point">
+        <div class="why-icon blue">💰</div>
+        <div class="why-text">
+          <h4>Dramatically lower cost</h4>
+          <p>A fine-tuned 7B model running on your own hardware costs a fraction of a GPT-4o API call. At scale, the difference is orders of magnitude.</p>
+        </div>
+      </div>
+      <div class="why-point">
+        <div class="why-icon green">🔒</div>
+        <div class="why-text">
+          <h4>Your data stays private</h4>
+          <p>No API call means no data leaving your environment. Critical for healthcare, legal, finance, and defense applications where data cannot touch a third-party server.</p>
+        </div>
+      </div>
+      <div class="why-point">
+        <div class="why-icon blue">⚡</div>
+        <div class="why-text">
+          <h4>No vendor dependency</h4>
+          <p>OpenAI deprecates models. Anthropic changes pricing. Google pivots. A fine-tuned model you own runs the same way forever, regardless of what any vendor decides.</p>
+        </div>
+      </div>
+      <div class="why-point">
+        <div class="why-icon green">🎯</div>
+        <div class="why-text">
+          <h4>Better at your task</h4>
+          <p>A general-purpose model is trained to do everything adequately. A fine-tuned model is trained to do your specific task exceptionally. The benchmark above shows what that difference looks like.</p>
+        </div>
+      </div>
     </div>
-    <div class="price-card featured">
-      <div class="price-tag">HOSTED API</div>
-      <div class="price-amount">$500–2K/mo</div>
-      <div class="price-desc">We host the fine-tuned model. You call the API.</div>
-      <ul class="price-features">
-        <li>Everything in Project tier</li>
-        <li>Hosted inference endpoint</li>
-        <li>Pay per call or flat monthly</li>
-        <li>Model stays private — no weight transfer</li>
-        <li>Ongoing fine-tuning as your data grows</li>
-      </ul>
+
+    <div class="why-visual">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:16px">Open-Source vs. Closed-Source API</div>
+      <div class="compare-header">
+        <div></div>
+        <div style="color:var(--green)">Open-Source</div>
+        <div>Closed API</div>
+      </div>
+      <div class="compare-row"><span class="label">Cost per query</span><span class="open">~$0.00002</span><span class="closed">~$0.015</span></div>
+      <div class="compare-row"><span class="label">Data privacy</span><span class="open">100% local</span><span class="closed">Sent to vendor</span></div>
+      <div class="compare-row"><span class="label">Model ownership</span><span class="open">You own it</span><span class="closed">Rented</span></div>
+      <div class="compare-row"><span class="label">Deprecation risk</span><span class="open">None</span><span class="closed">High</span></div>
+      <div class="compare-row"><span class="label">Domain accuracy</span><span class="open">Fine-tuned ✓</span><span class="closed">General</span></div>
+      <div class="compare-row"><span class="label">Latency</span><span class="open">On your hardware</span><span class="closed">API round-trip</span></div>
+      <p style="font-size:11px;color:var(--muted);margin-top:16px;line-height:1.6">Cost estimate at 1M queries/month. Closed API cost based on GPT-4o pricing. Open-source cost assumes A100 cloud GPU amortized over 24 months.</p>
     </div>
   </div>
-</section>
+</div>
 
-<hr class="divider">
+<!-- SERVICES -->
+<div style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+<div class="section" id="services">
+  <div class="sec-tag">What We Do</div>
+  <h2>Services.</h2>
+  <p class="sec-sub">We work with teams who have a specific reasoning problem that general-purpose models don't solve well enough.</p>
 
-<section id="contact">
-  <div class="contact-wrap">
-    <div class="section-tag" style="text-align:center">Get Started</div>
-    <h2>Tell us what you're building</h2>
-    <p>We'll respond within one business day.</p>
-    <div class="form-row">
-      <input type="text" class="form-input" placeholder="Name">
-      <input type="email" class="form-input" placeholder="Work email">
-      <input type="text" class="form-input" placeholder="Company / project">
-      <textarea class="form-input" placeholder="What reasoning problem are you trying to solve?"></textarea>
-      <button class="form-submit">Send →</button>
+  <div class="services">
+    <div class="svc">
+      <div class="svc-icon">🧠</div>
+      <h3>Domain Fine-Tuning</h3>
+      <p>We fine-tune an open-source model on your specific task — legal reasoning, medical analysis, financial modeling, security analysis, or any other domain that requires precision. You get the adapter weights and can run the model anywhere.</p>
+      <span class="svc-tag">Most Popular</span>
+    </div>
+    <div class="svc">
+      <div class="svc-icon">📊</div>
+      <h3>Benchmark & Evaluation</h3>
+      <p>We design a benchmark specific to your task and measure current model performance before and after fine-tuning. You get a verifiable number — not a vague claim of "improvement."</p>
+      <span class="svc-tag">Always Included</span>
+    </div>
+    <div class="svc">
+      <div class="svc-icon">🗂️</div>
+      <h3>Training Data Curation</h3>
+      <p>Most fine-tuning fails because of bad training data. We build or curate the dataset that actually teaches reasoning — not surface-level pattern matching. This is the hard part. We've solved it.</p>
+      <span class="svc-tag">The Hard Part</span>
+    </div>
+    <div class="svc">
+      <div class="svc-icon">🚀</div>
+      <h3>Deployment Support</h3>
+      <p>We help you deploy the fine-tuned model in your environment — on-premise, private cloud, or air-gapped. We write the inference API and integrate it with your existing stack.</p>
+      <span class="svc-tag">Optional Add-On</span>
+    </div>
+    <div class="svc">
+      <div class="svc-icon">🔄</div>
+      <h3>Iterative Improvement</h3>
+      <p>Fine-tuning is not a one-time event. As your use case evolves, we retrain with new data and measure the delta. Ongoing relationship, not a one-off project.</p>
+      <span class="svc-tag">Retainer Option</span>
+    </div>
+    <div class="svc">
+      <div class="svc-icon">🔬</div>
+      <h3>Research Collaboration</h3>
+      <p>If you have a novel reasoning problem — something no existing model handles well — we can research and develop a fine-tuning approach from scratch. We publish results when appropriate.</p>
+      <span class="svc-tag">Custom Scope</span>
     </div>
   </div>
-</section>
+</div>
+</div>
 
+<!-- CTA -->
+<div class="cta-section" id="contact">
+  <div class="cta-inner">
+    <div class="sec-tag" style="margin-bottom:16px">Get Started</div>
+    <h2>Tell us your reasoning problem.</h2>
+    <p>We'll tell you whether fine-tuning can solve it, which model to use, and what a realistic benchmark score looks like. No commitment — just an honest conversation.</p>
+    <div class="cta-email">
+      <input class="email-input" type="email" placeholder="your@email.com">
+      <a href="mailto:hello@tunedailabs.com" class="btn-primary">Get In Touch</a>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:16px">Or email us directly: <a href="mailto:hello@tunedailabs.com" style="color:var(--blue)">hello@tunedailabs.com</a></p>
+  </div>
+</div>
+
+<!-- FOOTER -->
 <footer>
-  <div class="footer-logo">Tuned<span>AI</span></div>
-  <div class="footer-copy">© 2026 TunedAI. Fine-tuned models for real-world reasoning.</div>
+  <div class="footer-logo">TunedAI<span>Labs</span></div>
+  <div class="footer-links">
+    <a href="https://huggingface.co/tunedailabs" target="_blank">HuggingFace</a>
+    <a href="https://colab.research.google.com/github/tunedailabs/tunedai/blob/main/causal_reasoning_demo.ipynb" target="_blank">Live Demo</a>
+    <a href="https://github.com/tunedailabs/tunedai" target="_blank">GitHub</a>
+  </div>
+  <div class="footer-copy">© 2026 TunedAI Labs</div>
 </footer>
 
-<script>
-const examples = [
-  {
-    q: "Kidney stone treatment study (Simpson 1951):\n\nSmall stones: Treatment A 93% success (81/87), Treatment B 87% success (234/270)\nLarge stones: Treatment A 73% success (192/263), Treatment B 69% success (55/80)\nCombined: Treatment A 78% success (273/350), Treatment B 83% success (289/350)\n\nA patient arrives and we do not yet know their stone size. Which treatment should we give them, and why does the combined percentage give the wrong answer?",
-    base: "Looking at the combined data, Treatment B has an 83% success rate vs Treatment A's 78%. I would recommend Treatment B as it shows better overall outcomes across the full patient population.",
-    baseV: "wrong",
-    gpt: "This is Simpson's Paradox. Treatment A is better for both small AND large stones individually, yet appears worse overall. This happens because Treatment A was disproportionately assigned to harder cases (large stones). For a new patient whose stone size we don't know, we should consider the base rate of stone sizes and likely recommend Treatment A, since it outperforms in both subgroups. The aggregate statistic is misleading here.",
-    gptV: "partial",
-    claude: "This illustrates Simpson's Paradox — Treatment A is superior in both subgroups, but appears inferior in aggregate because large-stone patients (who have worse outcomes regardless) were more likely to receive Treatment A. The aggregate conflates two different patient populations. For an unknown stone size, the causal question is: which treatment causes better outcomes? Since Treatment A wins in both subgroups, Treatment A is the correct choice. The combined percentage is confounded by stone size.",
-    claudeV: "partial",
-    tuned: "This is a confounding problem (Rung 2). Stone size is a confounder: it affects both which treatment doctors assign AND the outcome. The aggregate statistic mixes two different populations without controlling for this. The correct causal reasoning: do(Treatment A) produces 93% for small stones and 73% for large stones. do(Treatment B) produces 87% and 69% respectively. Treatment A is causally superior in both strata. For an unknown patient, administer Treatment A — the aggregate 83% for B is a statistical artifact of confounding, not a causal effect. To read the aggregate as a treatment recommendation would be to commit the ecological fallacy.",
-    tunedV: "right"
-  },
-  {
-    q: "Bradford Hill (1965) on smoking and lung cancer:\n\nObserved: Smokers have 9-10x higher lung cancer rates. Finding replicates across countries and decades. Heavier smokers have higher rates. Lung cancer diagnosis comes after years of smoking, not before. Carcinogens in smoke are biologically plausible.\n\nNo RCT was conducted (you cannot randomize people to smoke for decades). Critics argue: without an RCT, this is only association. Can we conclude smoking causes lung cancer from this observational evidence?",
-    base: "Without a randomized controlled trial, we cannot definitively establish causation. The correlation is strong, but there could be confounding factors — perhaps people who smoke also have other lifestyle factors that increase cancer risk. We should be cautious about claiming causation from observational data alone.",
-    baseV: "wrong",
-    gpt: "Yes, we can reasonably conclude causation. Bradford Hill's criteria — strength, consistency, temporality, dose-response, biological plausibility — collectively make a strong causal case even without an RCT. Temporality is particularly important: the cause must precede the effect. The dose-response gradient rules out many confounders. No single criterion is decisive, but together they form a compelling causal argument that meets the scientific standard of the time and since.",
-    gptV: "partial",
-    claude: "Bradford Hill's criteria provide a framework for causal inference from observational data precisely because RCTs are sometimes impossible. The temporality criterion (cancer follows smoking by decades) is particularly powerful — it rules out reverse causation. The dose-response gradient makes confounding explanations increasingly implausible. Consistency across populations and study designs guards against bias. While observational evidence is weaker than an RCT in principle, the totality of evidence here crosses the threshold for causal inference. We can conclude smoking causes lung cancer.",
-    claudeV: "partial",
-    tuned: "Yes. Observational evidence can license a causal claim when the totality of evidence systematically closes off alternative explanations. Bradford Hill's criteria do exactly this: temporality rules out reverse causation (cancer follows decades of smoking, never the reverse); dose-response makes a common-cause confounder implausible (any confounder would have to perfectly co-vary with smoking intensity across every population studied); consistency across countries, decades, and study designs rules out local bias; biological plausibility provides a mechanism. The formal question — does smoking causally increase cancer risk, independent of any confounders? — can be answered from observational data when front-door and back-door adjustment conditions are met and the evidence satisfies these criteria. The critics demanding an RCT misunderstand how causal inference from observational data works: with the right assumptions satisfied and enough evidence closing off alternatives, the causal claim is licensed. Here, all conditions are met.",
-    tunedV: "right"
-  },
-  {
-    q: "Hume's counterfactual test (1748):\n\nHume proposed: 'We may define a cause to be an object where, if the first object had not been, the second never had existed.'\n\nApply this test to two cases:\n1. A driver runs a red light and strikes a pedestrian who is injured.\n2. Two assassins independently plan to poison a victim. Assassin A poisons the drink. Assassin B, not knowing this, also poisons the drink. The victim dies.\n\nDoes Hume's but-for test correctly identify the cause in both cases?",
-    base: "In Case 1, applying Hume's test: if the driver had not run the light, the pedestrian would not have been struck. So the driver caused the injury. In Case 2, it's more complex — both assassins intended to cause harm. We would likely hold both responsible morally even if only one's poison was the proximate cause.",
-    baseV: "wrong",
-    gpt: "Case 1: Hume's test works. But for the driver running the light, the injury would not have occurred. The counterfactual is clean. Case 2: Hume's test fails — this is overdetermination. Even if Assassin A had not acted, the victim would still have died (from B's poison). So the but-for test says A did NOT cause the death, which is clearly wrong. This is the classic problem of preemption and overdetermination in counterfactual theories of causation, which led to later refinements like INUS conditions (Mackie) and structural causal models (Pearl).",
-    gptV: "right",
-    claude: "Case 1 succeeds: but for the driver's action, no injury. Straightforward application. Case 2 reveals a fundamental flaw: this is symmetric overdetermination. Removing either assassin's action still results in death (the other's poison kills). So neither passes Hume's but-for test — yet clearly the death was caused. Hume's definition fails for overdetermination, preemption, and cases with redundant causation. This motivated Mackie's INUS conditions and ultimately Pearl's structural causal model, where causation is defined via do-calculus interventions on causal graphs rather than simple counterfactual dependence.",
-    claudeV: "right",
-    tuned: "Case 1: Hume's test succeeds. This is a Rung 3 (counterfactual) query: Y_{X=0} ≠ Y_{X=1}. In the actual world, driver runs light (X=1), pedestrian is injured (Y=1). In the counterfactual world, do(X=0), the vehicle is not in the pedestrian's path, Y=0. Counterfactual dependence holds — Hume's test correctly identifies causation. Case 2: Hume's test fails — this is symmetric overdetermination. Y=1 whether A acts or not (B's poison also kills), and Y=1 whether B acts or not (A's poison kills). Neither satisfies but-for dependence individually, yet both are causes. This is a known failure mode of pure counterfactual theories. Pearl's structural causal model resolves this by modeling each assassin as a separate intervention node in the causal graph and applying actual causation criteria (Halpern-Pearl): X is an actual cause of Y if there exists a context where X makes the difference, holding other variables at their actual values. Both assassins qualify under this definition.",
-    tunedV: "right"
-  },
-  {
-    q: "John Snow (1854) — Cholera and the Broad Street pump:\n\nSnow observed: Southwark & Vauxhall water company customers had 315 cholera deaths per 10,000 houses. Lambeth company customers had 37 per 10,000. He then removed the handle from the Broad Street pump. The local outbreak subsided.\n\nWhat does the household comparison establish? What does the pump handle removal establish that the comparison alone cannot? And why does the direction of Snow's reasoning matter?",
-    base: "The household comparison shows that people using the Southwark & Vauxhall supply were much more likely to die of cholera. This is strong evidence that the water supply caused the disease. Removing the pump handle stopped people from using that water source and the disease went away, confirming the connection.",
-    baseV: "wrong",
-    gpt: "The household comparison establishes a strong association (Rung 1): water source and cholera mortality co-vary. It is suggestive but cannot rule out confounders — perhaps neighborhoods with different water suppliers also differed in income, diet, or other factors. The pump handle removal is a natural intervention (Rung 2): Snow changed the exposure variable for a population and measured the effect. This is much closer to a causal claim. The direction matters because Snow reasoned from a specific mechanism hypothesis (waterborne transmission) to a targeted intervention, rather than data-mining — which strengthened the causal inference.",
-    gptV: "right",
-    claude: "The comparison establishes association: P(cholera | Southwark water) >> P(cholera | Lambeth water). This is Rung 1 — informative but insufficient for causation, as confounders (poverty, geography) could explain it. The pump handle removal is a real-world do-operator: do(pump=unavailable). The outbreak subsidence in that district is observational evidence of P(cholera | do(no pump)) < P(cholera | do(pump)). This is Rung 2 — causal. Snow's direction matters: he had a theory (waterborne transmission), identified the causal variable (pump water), intervened on exactly that variable, and measured the downstream effect. This is scientific causal reasoning, not correlation mining.",
-    claudeV: "right",
-    tuned: "The household comparison is a Rung 1 observation: P(cholera | Southwark) ≠ P(cholera | Lambeth). It identifies an association but cannot establish causation — both water suppliers may serve neighborhoods that differ on other variables (income, sanitation, population density). Confounders are uncontrolled. The pump handle removal is a Rung 2 intervention: do(pump_access = 0). Snow held the population fixed and changed exactly one variable. The subsequent decline in cases is evidence that P(cholera | do(pump=off)) < P(cholera | do(pump=on)). This is a causal claim, not a correlation. The direction of reasoning matters because Snow proceeded from mechanism to intervention — he hypothesized a causal pathway (contaminated water → cholera), identified the specific intervention point (the pump), and tested it. This is the structure of valid causal inference: mechanism → do-operator → outcome measurement. Data-driven correlation-mining in reverse (outcome → association → intervention) is far weaker.",
-    tunedV: "right"
-  }
-];
-
-let currentIdx = 0;
-
-function loadExample(i, el) {
-  document.querySelectorAll('.demo-example').forEach(e => e.classList.remove('active'));
-  el.classList.add('active');
-  currentIdx = i;
-  document.getElementById('demoInput').value = examples[i].q;
-  showResults(i);
-}
-
-function runDemo() {
-  const q = document.getElementById('demoInput').value.trim();
-  if (!q) return;
-  for (let i = 0; i < examples.length; i++) {
-    if (examples[i].q === q) { showResults(i); return; }
-  }
-  // Custom question
-  ['base','gpt','claude','tuned'].forEach(k => {
-    document.getElementById('out-'+k).textContent = k === 'tuned'
-      ? 'Submit your question below and we\'ll run it on the live model and send you the comparison.'
-      : 'Live inference for custom questions available via contact form.';
-    document.getElementById('ver-'+k).innerHTML = '';
-  });
-}
-
-function verdict(v) {
-  if (v === 'wrong') return '<span class="model-verdict verdict-wrong">✗ Incorrect</span>';
-  if (v === 'partial') return '<span class="model-verdict verdict-partial">~ Partially correct</span>';
-  return '<span class="model-verdict verdict-right">✓ Correct</span>';
-}
-
-function showResults(i) {
-  const ex = examples[i];
-  document.getElementById('out-base').textContent = ex.base;
-  document.getElementById('out-gpt').textContent = ex.gpt;
-  document.getElementById('out-claude').textContent = ex.claude;
-  document.getElementById('out-tuned').textContent = ex.tuned;
-  document.getElementById('ver-base').innerHTML = verdict(ex.baseV);
-  document.getElementById('ver-gpt').innerHTML = verdict(ex.gptV);
-  document.getElementById('ver-claude').innerHTML = verdict(ex.claudeV);
-  document.getElementById('ver-tuned').innerHTML = verdict(ex.tunedV);
-}
-
-loadExample(0, document.querySelector('.demo-example'));
-</script>
 </body>
 </html>
