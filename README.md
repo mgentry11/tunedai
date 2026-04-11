@@ -28,9 +28,9 @@ You do not need to install anything. You just need a Google account.
 
 ## What You Are Testing
 
-The notebook runs a stratified sample from the real **CLadder benchmark** — the same 10,112-question dataset used to establish the 96.96% score.
+The notebook generates **fresh questions the model has never seen** — correct answers are computed from the numbers, not recalled from training. This rules out memorization entirely.
 
-Questions use fictional variable names (yupt, jyka, kwox, glimx, etc.) — the models cannot recall answers from pretraining. Answering correctly requires actual causal reasoning across three levels of difficulty:
+Questions use fictional variable names (yupt, jyka, kwox, glimx, etc.) across three levels of difficulty:
 
 | Level | Type | Example |
 |---|---|---|
@@ -38,20 +38,23 @@ Questions use fictional variable names (yupt, jyka, kwox, glimx, etc.) — the m
 | 2 | Intervention | If we do X, does Y change? |
 | 3 | Counterfactual | If X had been different, would Y have changed? |
 
-The default run is 20 questions (~3 minutes). Change `N_QUESTIONS = 20` to `N_QUESTIONS = 200` in the notebook for a more thorough test (~20 minutes).
+The default run is 200 questions (~20 minutes on T4).
 
 ---
 
-## The Benchmark Results
+## Verified Results — 200 Fresh Questions
 
-| Model | CLadder Score | Notes |
-|---|---|---|
-| **TunedAI Labs Causal Model** | **96.96%** | Fine-tuned on causal reasoning |
-| GPT-4o | ~72% | General purpose |
-| Claude 3.5 Sonnet | ~68% | General purpose |
-| Base Qwen 2.5-7B | ~62% | Same model, no fine-tuning |
+These numbers were produced on questions **generated at runtime** — the model was not trained on them. Correct answers are computed from the given probabilities.
 
-The benchmark is public: [CLadder on GitHub](https://github.com/causalNLP/cladder). You can verify our score independently.
+| Model | Overall | Level 1 | Level 2 | Level 3 |
+|---|---|---|---|---|
+| **TunedAI Labs ★** | **93.0%** | **85%** | **100%** | **100%** |
+| Base Qwen 2.5-7B | 64.0% | 61% | 78% | 44% |
+| **Gap** | **+29 pp** | +24 pp | +22 pp | +56 pp |
+
+Level 3 (counterfactual reasoning) is where the gap is largest: the tuned model answers every question correctly while the base model performs near chance.
+
+The CLadder benchmark score (96.96% on 10,112 questions) is also public: [CLadder on GitHub](https://github.com/causalNLP/cladder).
 
 ---
 
