@@ -30,9 +30,9 @@ You do not need to install anything. You just need a Google account.
 
 The notebook runs a stratified sample from the real **CLadder benchmark** — the same 10,112-question dataset used to establish the 96.96% score.
 
-Questions use fictional variable names (yupt, jyka, kwox, glimx, etc.) — the models cannot recall answers from pretraining. Answering correctly requires actual causal reasoning across three levels of Pearl's causal hierarchy:
+Questions use fictional variable names (yupt, jyka, kwox, glimx, etc.) — the models cannot recall answers from pretraining. Answering correctly requires actual causal reasoning across three levels of difficulty:
 
-| Rung | Type | Example |
+| Level | Type | Example |
 |---|---|---|
 | 1 | Association | Is X correlated with Y? |
 | 2 | Intervention | If we do X, does Y change? |
